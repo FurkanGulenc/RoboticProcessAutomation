@@ -4,7 +4,7 @@ from fastapi.responses import StreamingResponse
 from io import BytesIO
 from dotenv import dotenv_values
 from typing import List
-from app.result_report import process_excel_to_df
+from result_report import process_excel_to_df
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 from reportlab.lib.pagesizes import letter

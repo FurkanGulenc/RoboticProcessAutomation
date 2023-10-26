@@ -2,10 +2,10 @@ fastapi
 pandas
 pdfkit
 reportlab
-PyQt5
 requests
 matplotlib
 python-dotenv
 customtkinter
 openpyxl
 pyinstaller
+uvicorn
