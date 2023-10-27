@@ -4,7 +4,7 @@ from fastapi.responses import StreamingResponse
 from io import BytesIO
 from dotenv import dotenv_values
 from typing import List
-from result_report import process_excel_to_df
+from app.result_report import process_excel_to_df
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 from reportlab.lib.pagesizes import letter
@@ -14,6 +14,7 @@ from reportlab.lib import colors
 import pandas as pd 
 from datetime import datetime
 import os
+from pathlib import Path
 
 app = FastAPI()
 
@@ -25,11 +26,24 @@ app.add_middleware(
     allow_headers=["*"],
     )
 
-if not os.path.exists("/Users/furkangulenc/Desktop/HiltonExcelCheck/uploads/excel"):
+base_directory = Path.home() / "Desktop/HiltonExcelCheck/uploads"
+excel_directory = base_directory / "excel"
+pdf_directory = base_directory / "pdf"
+
+
+if not excel_directory.exists():
+    excel_directory.mkdir(parents=True, exist_ok=True)
+
+if not pdf_directory.exists():
+    pdf_directory.mkdir(parents=True, exist_ok=True)
+
+
+
+"""if not os.path.exists("/Users/furkangulenc/Desktop/HiltonExcelCheck/uploads/excel"):
     os.makedirs("/Users/furkangulenc/Desktop/HiltonExcelCheck/uploads/excel")
 
 if not os.path.exists("/Users/furkangulenc/Desktop/HiltonExcelCheck/uploads/pdf"):
-    os.makedirs("/Users/furkangulenc/Desktop/HiltonExcelCheck/uploads/pdf")
+    os.makedirs("/Users/furkangulenc/Desktop/HiltonExcelCheck/uploads/pdf")"""
 
 print("UYGULAMA BAŞLATILDIIIIIIIIIIII")
 
@@ -52,12 +66,12 @@ async def uploadExcel(files: List[UploadFile] = File(...)):
     for file in files:
             file_extension = file.filename.rsplit(".", 1)[1].lower()
             if file_extension == "pdf":
-                save_path_pdf = "/Users/furkangulenc/Desktop/HiltonExcelCheck/uploads/pdf/" + file.filename
+                save_path_pdf = str(pdf_directory / file.filename)
                 with open(save_path_pdf, "wb") as f:
                     f.write(await file.read())
 
             elif file_extension == "xlsx":
-                save_path_excel = "/Users/furkangulenc/Desktop/HiltonExcelCheck/uploads/excel/" + file.filename
+                save_path_excel = str(excel_directory / file.filename)
                 with open(save_path_excel, "wb") as f:
                     f.write(await file.read())
                 uploaded_excel_file_path = save_path_excel
@@ -107,7 +121,7 @@ async def create_pdf(df):
     pdf = SimpleDocTemplate(buffer, pagesize=letter)
     elements = []
 
-    logo_path = "constant_data/CorpAILogo1.png"
+    logo_path = str(Path("constant_data") / "CorpAILogo1.png")
     c = canvas.Canvas(buffer)
     c.drawImage(logo_path, 150, 750, width=200, height=100, preserveAspectRatio=True, anchor='c')
     c.setFont("Helvetica", 12)
