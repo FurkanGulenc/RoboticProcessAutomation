@@ -4,11 +4,12 @@ import tkinter.messagebox
 import customtkinter
 import requests
 import pandas as pd
+import os
 
 customtkinter.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
 
-ICON_PATH = ""
+ICON_PATH = os.path.join("icons", "icon.ico")
 
 class App(customtkinter.CTk):
     def __init__(self):
